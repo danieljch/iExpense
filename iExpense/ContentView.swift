@@ -13,17 +13,33 @@ class User: ObservableObject {
 }
 
 struct ContentView: View {
+    @State private var showingSheet = false
     @StateObject  var user = User()
     var body: some View {
-        VStack {
-                   Text("Your name is \(user.firstName) \(user.lastName).")
-
-                   TextField("First name", text: $user.firstName)
-                   TextField("Last name", text: $user.lastName)
+        Button("Show Sheet") {
+            showingSheet.toggle()
                }
+        .sheet(isPresented: $showingSheet) {
+            SecondView(name: "twostraws")
+        }
     }
 }
 
+
+struct SecondView: View {
+    let name: String
+    @Environment(\.dismiss) var dismiss
+
+      var body: some View {
+          VStack {
+              Text("Hello, \(name)!")
+              Button("Dismiss") {
+                  dismiss()
+              }
+          }
+          
+      }
+}
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
