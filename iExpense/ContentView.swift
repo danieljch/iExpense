@@ -7,55 +7,37 @@
 
 import SwiftUI
 
-class User: ObservableObject {
-    @Published var firstName = "Bilbo"
-    @Published var lastName = "Baggins"
-}
+
 
 struct ContentView: View {
-    @State private var numbers = [Int]()
-    @State private var currentNumber = 1
-
+ @StateObject var expenses = Expenses()
+    
     var body: some View {
         NavigationView {
-            VStack{
             List {
-                ForEach(numbers, id: \.self) {
-                    Text("Row \($0)")
+                ForEach(expenses.items, id: \.name) { item in
+                    Text(item.name)
                 }
-                .onDelete(perform: removeRows)
+                .onDelete(perform: removeItems)
             }
-
-            Button("Add Number") {
-                numbers.append(currentNumber)
-                currentNumber += 1
-            }
-            }
+            .navigationTitle("iExpense")
             .toolbar {
-                EditButton()
+                Button {
+                    let expense = ExpenseItem(name: "Test", type: "Personal", amount: 5)
+                    expenses.items.append(expense)
+                } label: {
+                    Image(systemName: "plus")
+                }
             }
         }
     }
-    func removeRows(at offsets: IndexSet) {
-        numbers.remove(atOffsets: offsets)
+    func removeItems(at offsets: IndexSet) {
+        expenses.items.remove(atOffsets: offsets)
     }
 }
 
 
-struct SecondView: View {
-    let name: String
-    @Environment(\.dismiss) var dismiss
 
-      var body: some View {
-          VStack {
-              Text("Hello, \(name)!")
-              Button("Dismiss") {
-                  dismiss()
-              }
-          }
-          
-      }
-}
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
